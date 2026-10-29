@@ -102,8 +102,10 @@ Public preview: https://elnorbiako.github.io/megadev-s01e04/
 - #6 was closed when its link was first sent. The course rejected that, so it was reopened. The
   reviewer has now seen the marked preview. Future preview work stays open until the reviewer has
   looked.
-- Cleanup (section 4) is approved: the marker-free replacement goes over the same link, and the
-  old marked deployment artifact is deleted. Marker removal is **required to be verified** on the
-  public preview link before #7 closes. Verification is still pending: the coordinator is deploying.
-  Coordinator: update this note after verification passes.
+- Cleanup (section 4) was approved and verified on 2026-10-29. The marker-free deployment
+  replaced the page at the same public HTTPS link. A fresh HTTP fetch showed "no marker set",
+  confirmed the original marker is absent, and retained all five jobs with no client scripts.
+  The old marked deployment artifact was deleted.
+- Deployment: https://github.com/elnorbiako/megadev-s01e04/actions/runs/40965619104
+- Verification: 50 tests pass and TypeScript checks pass; the original runs/ fixtures are unchanged.
 - #7 closes only after that verification and after this archive is merged.
