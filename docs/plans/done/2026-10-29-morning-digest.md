@@ -1,8 +1,9 @@
 ---
 plan: morning-digest
-status: ready
+status: done
 owner: rook
 opened: 2026-10-29
+closed: 2026-10-29
 ---
 
 # Morning digest
@@ -77,3 +78,32 @@ page again with `LANE_MARKER` unset (the banner reads "no marker set") and uploa
 link. Move this plan to `docs/plans/done/` with its issue list.
 
 Done when: the preview link no longer shows the lane marker.
+
+---
+
+## Issues
+
+Split from this plan, one per unit of work (titles as on GitHub):
+
+| # | Title | Plan section | Blocked by | Worker (harness · model · effort) |
+|---|---|---|---|---|
+| [#1](https://github.com/elnorbiako/megadev-s01e04/issues/1) | Run log reader | 1 | none | pi · gpt-6.1-sol · high |
+| [#2](https://github.com/elnorbiako/megadev-s01e04/issues/2) | Digest HTML page | 2a | #1 | pi · claude-haiku-5.5 · low |
+| [#3](https://github.com/elnorbiako/megadev-s01e04/issues/3) | Digest JSON endpoint | 2b | #1 | pi · claude-haiku-5.5 · low |
+| [#4](https://github.com/elnorbiako/megadev-s01e04/issues/4) | Status board digest links | 2c | #1 | pi · claude-haiku-5.5 · low |
+| [#5](https://github.com/elnorbiako/megadev-s01e04/issues/5) | Digest route tests | 2d | #1 | pi · claude-haiku-5.5 · low |
+| [#6](https://github.com/elnorbiako/megadev-s01e04/issues/6) | Public review preview | 3 | #2, #3, #4, #5 | pi · claude-haiku-5.5 · low |
+| [#7](https://github.com/elnorbiako/megadev-s01e04/issues/7) | Remove marker and archive plan | 4 | #6 | pi · claude-haiku-5.5 · low |
+
+Public preview: https://elnorbiako.github.io/megadev-s01e04/
+
+## Notes
+
+- #6 was closed when its link was first sent. The course rejected that, so it was reopened. The
+  reviewer has now seen the marked preview. Future preview work stays open until the reviewer has
+  looked.
+- Cleanup (section 4) is approved: the marker-free replacement goes over the same link, and the
+  old marked deployment artifact is deleted. Marker removal is **required to be verified** on the
+  public preview link before #7 closes. Verification is still pending: the coordinator is deploying.
+  Coordinator: update this note after verification passes.
+- #7 closes only after that verification and after this archive is merged.
