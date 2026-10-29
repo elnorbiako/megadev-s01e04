@@ -1,5 +1,7 @@
 import type { Status } from '../status.js';
 
+const dash = (n: number | null) => (n === null ? '—' : String(n));
+
 export function StatusBoard({ status }: { status: Status }) {
   return (
     <>
@@ -15,14 +17,29 @@ export function StatusBoard({ status }: { status: Status }) {
         </tbody>
       </table>
       <h2>nights on disk</h2>
-      {status.nights.length === 0 ? (
+      {status.nightSummaries.length === 0 ? (
         <p class="mute">nothing in runs/</p>
       ) : (
-        <ul>
-          {status.nights.map((n) => (
-            <li>{n}</li>
-          ))}
-        </ul>
+        <>
+          <p class="mute">counts are jobs by last status, not event totals</p>
+          <table>
+            <thead>
+              <tr><th>night</th><th>jobs</th><th>ok</th><th>retry</th><th>fail</th><th>bad lines</th></tr>
+            </thead>
+            <tbody>
+              {status.nightSummaries.map((s) => (
+                <tr>
+                  <td><a href={s.href}>{s.night}</a></td>
+                  <td>{dash(s.jobs)}</td>
+                  <td>{dash(s.ok)}</td>
+                  <td>{dash(s.retry)}</td>
+                  <td>{dash(s.fail)}</td>
+                  <td>{dash(s.badLines)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </>
   );
