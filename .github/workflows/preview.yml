@@ -1,0 +1,65 @@
+# Manual only. Builds the review preview of the digest page (plan §3, ADR 0003) and deploys it
+# to GitHub Pages. Nothing runs on push. Clean-up (plan §4) is the same workflow with
+# include_marker unset, run after the review is in.
+name: preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      include_marker:
+        description: "Show the lane marker (LANE_MARKER secret). Off = marker-free page."
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# One deployment at a time: a marker build and a clean-up build never overlap.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm typecheck
+
+      - name: Export preview
+        env:
+          # Secret only when the marker is wanted; otherwise empty. Never echoed.
+          LANE_MARKER: ${{ inputs.include_marker && secrets.LANE_MARKER || '' }}
+        run: scripts/export-preview.sh ${{ inputs.include_marker && 'marker' || 'clean' }}
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: var/preview
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - id: deployment
+        uses: actions/deploy-pages@v4

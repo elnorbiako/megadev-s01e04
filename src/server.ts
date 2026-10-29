@@ -6,8 +6,10 @@ import { lane } from './lane.js';
 
 const config = loadConfig();
 const port = Number(process.env.PORT ?? 8787);
+// Local only (plan: auth out of scope, rig only listens on localhost).
+const hostname = '127.0.0.1';
 
 startBeating(lane().id, config.beatEverySeconds);
-serve({ fetch: createApp(config).fetch, port }, () => {
-  console.log(`rig · ${lane().id} · http://localhost:${port}`);
+serve({ fetch: createApp(config).fetch, port, hostname }, () => {
+  console.log(`rig · ${lane().id} · http://${hostname}:${port}`);
 });
