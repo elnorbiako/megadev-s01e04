@@ -1,7 +1,7 @@
-import { mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { createApp } from '../src/app.js';
 import { readStatus, summarizeNight } from '../src/status.js';
 import { readNight } from '../src/digest/reader.js';
@@ -9,6 +9,15 @@ import type { RigConfig } from '../src/config.js';
 
 const base = { adapter: 'shim', installed: '2026-10-29T14:06:00+01:00', beatEverySeconds: 60 };
 const fixtures: RigConfig = { ...base, runsDir: 'runs' };
+const tempDirs: string[] = [];
+function tempRunsDir(): string {
+  const dir = mkdtempSync(join(tmpdir(), 'rig-runs-'));
+  tempDirs.push(dir);
+  return dir;
+}
+afterEach(() => {
+  for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true });
+});
 
 describe('status board night links', () => {
   it('links every fixture night to its digest and labels counts by last status', async () => {
@@ -35,7 +44,7 @@ describe('status board night links', () => {
   });
 
   it('an empty night file is a zero-count summary, not a dash', () => {
-    const dir = mkdtempSync(join(tmpdir(), 'rig-runs-'));
+    const dir = tempRunsDir();
     writeFileSync(join(dir, '2026-01-02.jsonl'), '');
     mkdirSync(join(dir, 'ignored'));
     const status = readStatus({ ...base, runsDir: dir });
@@ -46,7 +55,7 @@ describe('status board night links', () => {
   });
 
   it('an empty runs directory renders the empty message', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'rig-runs-'));
+    const dir = tempRunsDir();
     const html = await (await createApp({ ...base, runsDir: dir }).request('/')).text();
     expect(html).toContain('nothing in runs/');
     expect(html).not.toContain('/digest/');

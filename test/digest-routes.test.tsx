@@ -118,7 +118,7 @@ describe('GET /digest/:night (page)', () => {
     writeFileSync(join(runsDir, '2026-10-30.jsonl'), 'not json\n' + lines[0] + '\n');
     const res = await app().request('/digest/2026-10-30');
     expect(res.status).toBe(200);
-    expect(await res.text()).toMatch(/bad line|malformed/i);
+    expect(await res.text()).toMatch(/(?:bad|malformed|unreadable).*line/i);
   });
 
   it('escapes the lane banner', async () => {
